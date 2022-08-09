@@ -1,44 +1,41 @@
-version: "3.8"
-
+version: "2"
 services:
-  mongo1:
-    image: mongo:5.0
-    container_name: mongo1
-    volumes:
-      - ./mongors/data1:/data/db
-      - ./rs-init.sh:/scripts/rs-init.sh
-    networks:
-      - mongors-network
+  mongodb-primary:
+    image: "bitnami/mongodb:5.0.10"
     ports:
-      - 27021:27017
-    links:
-      - mongo2
-      - mongo3
-    restart: always
-    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs"]
-  mongo2:
-    container_name: mongo2
-    image: mongo:5.0
+      - 27017:27017
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
     volumes:
-      - ./mongors/data2:/data/db
-    networks:
-      - mongors-network
-    ports:
-      - 27022:27017
-    restart: always
-    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs"]
-  mongo3:
-    container_name: mongo3
-    image: mongo:5.0
-    volumes:
-      - ./mongors/data3:/data/db
-    networks:
-      - mongors-network
-    ports:
-      - 27023:27017
-    restart: always
-    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs"]
+      - "./mongodb_master_data:/bitnami"
 
-networks:
-  mongors-network:
-    driver: bridge
+  mongodb-secondary:
+    image: "bitnami/mongodb:5.0.10"
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+
+  mongodb-arbiter:
+    image: "bitnami/mongodb:5.0.10"   
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+
+volumes:
+  mongodb_master_data:
+    driver: local
