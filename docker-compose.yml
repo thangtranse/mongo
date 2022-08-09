@@ -2,6 +2,7 @@ version: "2"
 services:
   mongodb-primary:
     image: "bitnami/mongodb:5.0.10"
+    container_name: mongo_mongodb-primary_1
     ports:
       - 27017:27017
     environment:
@@ -14,6 +15,7 @@ services:
 
   mongodb-secondary:
     image: "bitnami/mongodb:5.0.10"
+    container_name: mongo_mongodb-secondary_1
     depends_on:
       - mongodb-primary
     environment:
@@ -25,7 +27,8 @@ services:
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
 
   mongodb-arbiter:
-    image: "bitnami/mongodb:5.0.10"   
+    image: "bitnami/mongodb:5.0.10"
+    container_name: mongo_mongodb-arbiter_1
     depends_on:
       - mongodb-primary
     environment:
