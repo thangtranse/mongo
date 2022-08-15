@@ -3,6 +3,7 @@ services:
   mongodb-primary:
     image: "bitnami/mongodb:5.0.10"
     container_name: mongo_mongodb-primary_1
+    restart: on-failure
     ports:
       - 27017:27017
     environment:
@@ -16,6 +17,7 @@ services:
   mongodb-secondary:
     image: "bitnami/mongodb:5.0.10"
     container_name: mongo_mongodb-secondary_1
+    restart: on-failure
     depends_on:
       - mongodb-primary
     environment:
@@ -29,6 +31,7 @@ services:
   mongodb-arbiter:
     image: "bitnami/mongodb:5.0.10"
     container_name: mongo_mongodb-arbiter_1
+    restart: on-failure
     depends_on:
       - mongodb-primary
     environment:

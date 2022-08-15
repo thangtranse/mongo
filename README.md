@@ -46,6 +46,12 @@ docker-compose down
 docker network prune
 ```
 
+3. Restart or rebuild
+
+```bash
+docker-compose up --detach --build
+```
+
 # Mongo Shell
 
 - `rs.status()`: checks status of the Replica set
@@ -60,6 +66,7 @@ docker network prune
 
 # Handle when Error
 
+1. Every change, you must remove or edit config mongodb
 1. You should change file `host`
 
 ```text
@@ -67,6 +74,14 @@ docker network prune
 ```
 
 - `mongodb-primary` if you change it in `docker-compose.yml` with `MONGODB_ADVERTISED_HOSTNAME` field, then you must change it's
+
+2. mkdir: cannot create directory `'/bitnami/mongodb/data'`: Operation not permitted
+
+```bash
+sudo chown -R 1001 /data/mongo
+```
+
+- /data/mongo:
 
 # Continue
 
