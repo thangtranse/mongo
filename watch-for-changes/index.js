@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 
 mongoose.connect(
-  "mongodb://root:password123@localhost:27017/mongodb-usersdb?authSource=admin",
+  "mongodb://root:password123@localhost:27017/mongodb?authSource=admin",
   {
     useNewUrlParser: true,
   }
@@ -27,7 +27,7 @@ const personSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-const Person = db.model("Person", personSchema);
+const Person = db.model("person", personSchema);
 Person.watch().on("change", (data) => {
   console.log(new Date().toLocaleString() + ":", data);
 });
