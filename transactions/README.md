@@ -10,6 +10,13 @@ Project use method Watch of mongo to listen all modified.
 1. Running `docker-compose.yml` to start mongodb
 1. Config URL connect to mongodb
 
+# Guide
+
+1. Creating a transaction
+1. Committing the transaction if it succeeds
+1. Aborting the transaction if your operation throws
+1. Retrying in the event of a transient transaction error.
+
 # REF
 
 1. [mongoosejs transactions](https://mongoosejs.com/docs/transactions.html)
